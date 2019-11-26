@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div style="width: 40%;float: left;margin-left: 50px ;margin-top: 50px">
+        <marquee id="affiche" align="left" behavior="scroll" bgcolor="" direction="left"><h3>资产表</h3></marquee>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>物资名称</th>
+                <th>物资描述</th>
+                <th>购买时间</th>
+                <th>购买人</th>
+                <th>所属实验室</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- On rows -->
+            {% for foo in balance_obj %}
+                <tr>
+                <td>{{ forloop.counter }}</td>
+                    <td>{{ foo.bname }}</td>
+                    <td>{{ foo.btext }}</td>
+                    <td>{{ foo.btime }}</td>
+                    <td>{{ foo.buser }}</td>
+                    <td>{{ foo.laboratory }}</td>
+                </tr>
+            {% endfor %}
+
+
+            </tbody>
+        </table>
+
+    </div >
+    <div style="width: 40%;float: left;margin-left: 10%;margin-top: 50px">
+             <marquee id="affiche" align="left" behavior="scroll" bgcolor="" direction="left"><h3>实验表</h3></marquee>
+
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>实验室名称</th>
+                <th>楼层</th>
+                <th>房间号</th>
+                <th>实验室负责人</th>
+                <th>实验室所有物品</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- On rows -->
+            {% for foo in laboratory_obj %}
+                <tr>
+                <td>{{ forloop.counter }}</td>
+                    <td>{{ foo.lname }}</td>
+                    <td>{{ foo.floor }}</td>
+                    <td>{{ foo.room_num }}</td>
+                    <td>{{ foo.user }}</td>
+                    <td>{% for foo in foo.Balance.all %}
+                        {{ foo.bname }}
+                    {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+
+
+            </tbody>
+        </table>
+
+    </div>
+    <div style="clear: both;margin: auto auto;width: 80%">
+    <br>
+    <br>
+    <br>
+    <br>
+              <marquee id="affiche" align="left" behavior="scroll" bgcolor=""  direction="left"><h3>用户表</h3></marquee>
+
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>用户名</th>
+                <th>姓名</th>
+                <th>手机号</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- On rows -->
+            {% for foo in user_obj %}
+                <tr>
+                <td>{{ forloop.counter }}</td>
+                    <td>{{ foo.user_name }}</td>
+                    <td>{{ foo.uname }}</td>
+                    <td>{{ foo.phone }}</td>
+                </tr>
+            {% endfor %}
+
+
+            </tbody>
+        </table>
+
+    </div>
+
+{% endblock %}

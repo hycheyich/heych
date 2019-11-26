@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block content%}
+<div style="width: 70%;margin:auto auto;margin-top: 50px">
+<h1>实验室表</h1>
+  <a href="{% url 'laboratoryadd' %}">
+            <button class="btn btn-default" type="button" style="color: white;background-color: red">添加</button>
+        </a>
+<table class="table table-hover">
+    <thead>
+       <tr>
+           <th>序号</th>
+                <th>名称</th>
+                <th>楼层</th>
+                <th>房间号</th>
+                <th>负责人</th>
+                <th>操作</th>
+            </tr>
+    </thead>
+    <tbody>
+    <!-- On rows -->
+    {% for foo in laboratory_obj %}
+    <tr>
+    <td>{{ forloop.counter}}</td>
+        <td>{{ foo.lname }}</td>
+        <td>{{ foo.floor }}</td>
+        <td>{{ foo.room_num }}</td>
+        <td>{{ foo.user}}</td>
+    <td>
+        <a><button class="btn btn-default del" value="{{ foo.pk }}" type="button" style="color: white;background-color: red">删除</button></a>
+        <a href="{% url 'laboratoryedit' foo.pk %}"><button class="btn btn-default" type="button" style="color: white;background-color: green">编辑</button></a>
+    </td>
+    </tr>
+    {% endfor %}
+
+
+
+
+
+    </tbody>
+</table>
+
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+    <script>
+        $(function () {
+            $('.del').click(function () {
+                var _this = this
+                swal({
+                    title: "确定删除此条数据吗?",
+                    text: "一旦删除，您将无法恢复这条数据!!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                url: '{% url 'laboratorydel' %}',  //  请求发送的地址
+                                type: 'get',   //  请求方式
+                                data: {'pk': $(_this).val()},  //  数据
+                                success: function (res) {
+                                    if (res) {
+                                        swal("这条数据已被删除", {
+                                            icon: "success",
+                                        });
+                                        $(_this).parent().parent().parent().remove()
+                                    }
+                                    else{
+                                        swal("删除失败,您这条数据是安全的!");
+                                    }
+                                }
+
+                            })
+                        }
+                        else {
+                            swal("您这条数据是安全的!");
+                        }
+                    });
+            })
+
+        })
+
+    </script>
+{% endblock %}

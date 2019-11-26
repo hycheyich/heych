@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="width: 70%;margin:auto auto;margin-top: 50px">
+        <h1>用户表</h1>
+        <a href="{% url 'useradd' %}">
+            <button class="btn btn-default" type="button" style="color: white;background-color: red">添加</button>
+        </a>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>用户名</th>
+                <th>姓名</th>
+                <th>手机号</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- On rows -->
+            {% for foo in user_obj %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ foo.user_name }}</td>
+                    <td>{{ foo.uname }}</td>
+                    <td>{{ foo.phone }}</td>
+                    <td>
+                        <a>
+                            <button class="btn btn-default del" type="button" value="{{ foo.pk }}"
+                                    style="color: white;background-color: red">
+                                删除
+                            </button>
+                        </a>
+                        {#                        <a href="{% url 'useredit' foo.pk %}">#}
+                        {#                            <button class="btn btn-default" type="button" style="color: white;background-color: green">#}
+                        {#                            </button>#}
+                        <button type="button" url="{% url 'useredit' foo.pk %}" class="btn btn-primary btn-lg te"
+                                data-toggle="modal" data-target="#gridSystemModal">
+                            编辑
+                        </button>
+                        {#                        </a>#}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+    {% csrf_token %}
+    <div id="gridSystemModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridModalLabel"
+         style="display: none;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default te" data-dismiss="modal"
+                            style="background-color: #9f3741">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary " id='changesave' style="background-color: #bb414d">保存
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        var url = "";
+        $(function () {
+            $('.del').click(function () {
+                var _this = this
+                swal({
+                    title: "确定删除此条数据吗?",
+                    text: "一旦删除，您将无法恢复这条数据!!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                url: '{% url 'userldel' %}',  //  请求发送的地址
+                                type: 'get',   //  请求方式
+                                data: {'pk': $(_this).val()},  //  数据
+                                success: function (res) {
+                                    if (res) {
+                                        swal("这条数据已被删除", {
+                                            icon: "success",
+                                        });
+                                        $(_this).parent().parent().parent().remove()
+                                    }
+                                    else {
+                                        swal("删除失败,您这条数据是安全的!");
+                                    }
+                                }
+
+                            })
+                        }
+                        else {
+                            swal("您这条数据是安全的!");
+                        }
+                    });
+            });
+            $('table').on('click', '.te', function () {
+                url = $(this).attr('url');
+                $.ajax({
+                    url: url,
+                    success: function (res) {
+                        $('.modal-body').html(res.form)
+                    }
+                })
+            })
+            $('#changesave').click(function () {
+                var form_data = new FormData();
+                $('.modal-body p label').each(function (index, dom) {
+                    var input = $(dom).next()
+                    form_data.append(input.attr('name'), input.val())
+                    $.ajax({
+                        url: url,
+                        type: 'post',
+                        data: form_data,
+                        headers: {'x-csrftoken': $('[name="csrfmiddlewaretoken"]').val()},
+                        processData: false,
+                        contentType: false,
+                        success: function (res) {
+                            if (res.status) {
+                                var btn = $("[url='" + url + "']")
+                                var tr = btn.parent().parent()
+
+                                tr.children('td').eq(1).text(form_data.get('user'))
+                                tr.children('td').eq(2).text(form_data.get('uname'))
+                                tr.children('td').eq(3).text(form_data.get('phone'))
+                                $('#gridSystemModal').modal('hide')
+
+                            } else {
+                                $('.modal-body').html(res.form)
+                            }
+                        }
+                    })
+
+
+                })
+
+            })
+
+        })
+
+
+    </script>
+{% endblock %}

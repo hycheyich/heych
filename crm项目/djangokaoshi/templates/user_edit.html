@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div style="width: 50%;margin:auto auto;margin-top: 20px">
+    <h3>编辑用户</h3>
+        <form action="" method="post">
+            {% csrf_token %}
+            <p>
+                <label class="col-sm-2 control-label" for="ds_host">{{ form_obj.user.label }}</label>
+                {{ form_obj.user }}
+                <span>{{ form_obj.user.errors }}</span>
+            </p>
+            <p>
+                <label class="col-sm-2 control-label" for="ds_pwd">{{ form_obj.passwd.label }}</label>
+                {{ form_obj.passwd }}
+                <span>{{ form_obj.passwd.errors }}</span>
+            </p>
+            <p>
+                <label class="col-sm-2 control-label" for="ds_repwd">{{ form_obj.repasswd.label }}</label>
+
+                {{ form_obj.repasswd }}
+                <span>{{ form_obj.repasswd.errors }}</span>
+            </p>
+            <p>
+                <label class="col-sm-2 control-label" for="ds_name">{{ form_obj.uname.label }}</label>
+
+                {{ form_obj.uname }}
+                <span>{{ form_obj.uname.errors }}</span>
+
+            </p>
+            <p>
+                <label class="col-sm-2 control-label" for="ds_phone">{{ form_obj.phone.label }}</label>
+
+                {{ form_obj.phone }}
+                <span>{{ form_obj.phone.errors }}</span>
+            </p>
+            <button class="btn btn-default" style="background: white;width: 100%">提交</button>
+        </form>
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends 'base_html/layout.html' %}
+{% load my_tags %}
+{% block css %}
+    <style>
+        #filtertxt1 {
+            padding-left: 10px;
+            padding-right: 10px;
+            width: 330px;
+            height: 39px;
+            border: 1px solid #394c62;
+            border-radius: 20px;
+        }
+
+        .sousuo {
+            width: 98px;
+            height: 39px;
+            border-radius: 19px;
+            border: none;
+            font-size: 16px;
+            background: #486d90;
+            color: #fff;
+        }
+
+        button {
+            text-align: center;
+        }
+
+        .button {
+            border: 1px solid rgba(0, 0, 0, 0.4);
+            box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.5), 0 0 1px 1px rgba(255, 255, 255, 0.8), 0 0 0 6px rgba(0, 0, 0, 0.06), 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            padding: 10px;
+            float: left;
+            color: #fff;
+            font-weight: 800;
+            font-size: 20px;
+            text-shadow: 1px 1px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 19px;
+        }
+
+        .price {
+            padding: 10px;
+            float: left;
+            color: rgba(0, 0, 0, 0.4);
+            font-weight: 800;
+            font-size: 20px;
+            text-shadow: 1px 1px rgba(255, 255, 255, 0.3);
+            text-transform: uppercase;
+            border-left: 1px solid rgba(0, 0, 0, 0.2);
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div>
+        <form action="" class="pull-right">
+            {% csrf_token %}
+            <select class="form-control" name="query_field">
+                <option value="name">姓名</option>
+                <option value="phone"> 手机号</option>
+                <option value="qq">qq</option>
+            </select>
+            <input type="text" id="filtertxt1" name='query' value="{{ sousuo }}">
+            <button class="btn btn-primary sousuo"> 搜索 <i class="fa fa-search " aria-hidden="true"></i></button>
+        </form>
+    </div>
+    <a href="{% url 'app01:curtoradd' %}">
+        <button>新增<i class="fa fa-plus"></i></button>
+    </a>
+
+    <form action="" method="post" class="form-inline">
+        {% csrf_token %}
+        <select name="action" class="form-control">
+            {% if request.path_info == url %}
+                <option value="multi_apply">公户转私户</option>
+            {% else %}
+                <option value="multi_pul">私户转公户</option>
+            {% endif %}
+        </select>
+        <button type="submit">提交</button>
+
+
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>选项</th>
+                <th>序号</th>
+                <th>姓名</th>
+                <th>QQ</th>
+                <th>性别</th>
+                <th>出生年月</th>
+                <th>手机号</th>
+                <th>客户来源</th>
+                <th>咨询课程</th>
+                <th>班级类型</th>
+                <th>状态</th>
+                <th>跟进记录</th>
+               <th>报名记录</th>
+                <th>最后跟进日期</th>
+                <th>销售</th>
+                <th>班级</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody style="text-align: center">
+            {% for customer_li in customer_lis %}
+                <tr>
+                    <td><input name="optionses" value="{{ customer_li.pk }}" type="checkbox"></td>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ customer_li.name|default:"---" }}</td>
+                    <td>{{ customer_li.qq }}</td>
+                    <td>{{ customer_li.get_sex_display }}</td>
+                    <td>{{ customer_li.birthday }}</td>
+                    <td>{{ customer_li.phone }}</td>
+                    <td>{{ customer_li.get_source_display }}</td>
+                    <td>{{ customer_li.course }}</td>
+                    <td>{{ customer_li.get_class_type_display }}</td>
+                    <td>
+                        {{ customer_li.show_color_statuc|safe }}
+                    </td>
+                    <td><a href="{% url 'app01:one_consult_record' customer_li.pk %}">查看</a></td>
+                    <td>
+                        <a href="{% reverse_url request 'app01:enrollment_add' customer_id=customer_li.pk   %}">报名</a>
+                        <a href="{% url 'app01:one_enrollment_list' customer_id=customer_li.pk %}">查看</a>
+                    </td>
+                    <td>{{ customer_li.last_consult_date }}</td>
+                    <td>{{ customer_li.consultant.name }}</td>
+                    <td>{{ customer_li.show_class_list }}
+                    </td>
+                    <td>
+{#                        <a class="btn btn-primary" href="{% url 'app01:custoredit'  customer_li.pk %}">编辑 <i#}
+{#                                class="fa fa-pencil-square-o" aria-hidden="true"></i></a>#}
+                        <a class="btn btn-primary" href="{% reverse_url request 'app01:custoredit' customer_li.pk   %}">编辑 <i
+                                class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                    </td>
+
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    </form>
+    {% if customer_lis %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {{ page_obj.page_html }}
+            </ul>
+        </nav>
+    {% endif %}
+
+{% endblock %}

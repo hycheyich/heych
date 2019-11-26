@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div style="width: 50%;margin:auto auto;margin-top: 20px">
+        <h3>添加物资</h3>
+        <form action="" method="post">
+            {% csrf_token %}
+            <p>
+                <label class="col-sm-2 control-label" for="ds_bname">{{ form_obj.bname.label }}</label>
+                {{ form_obj.bname }}
+                <span>{{ form_obj.bname.errors }}</span>
+            </p>
+            <p>
+                <label class="col-sm-2 control-label" for="ds_btext">{{ form_obj.btext.label }}</label>
+
+                {{ form_obj.btext }}
+                <span>{{ form_obj.btext.errors }}</span>
+            </p>
+            <p>
+                <label class="col-sm-2 control-label" for="ds_bla">{{ form_obj.blaboratory.label }}</label>
+                {{ form_obj.blaboratory }}
+                <span>{{ form_obj.buser.errors }}</span>
+            </p>
+            <p>
+                <label class="col-sm-2 control-label" for="ds_buser">{{ form_obj.buser.label }}</label>
+                {{ form_obj.buser }}
+                <span>{{ form_obj.buser.errors }}</span>
+            </p>
+
+            <button class="btn btn-default" style="background: white;width: 100%">提交</button>
+        </form>
+    </div>
+
+{% endblock %}
