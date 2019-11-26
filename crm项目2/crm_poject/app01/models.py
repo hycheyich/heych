@@ -147,9 +147,13 @@ class ClassList(models.Model):
     class Meta:
         unique_together = ("course", "semester", 'campuses')
 
+
     def __str__(self):
         st = str(self.campuses) + self.get_course_display() + str(self.semester) + "期"
         return st
+
+    def show_teachers(self):
+        return ",".join([str(i)  for i in self.teachers.all()])
 
 
 class ConsultRecord(models.Model):

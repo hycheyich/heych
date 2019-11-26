@@ -1,14 +1,12 @@
 from app01 import models
-from django import forms
 from django.core.exceptions import ValidationError
-from multiselectfield.forms.fields import MultiSelectFormField
-from django.forms.fields import BooleanField
 import hashlib
-from django.forms import forms
+from django import forms
 from django.forms.fields import BooleanField
 from multiselectfield.forms.fields import MultiSelectFormField
 
-#基础form组件
+
+# 基础form组件
 class BaseForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -17,6 +15,7 @@ class BaseForm(forms.ModelForm):
             if isinstance(field, (BooleanField, MultiSelectFormField)):
                 continue
             field.widget.attrs['class'] = 'form-control'
+
 
 class RegForm(forms.ModelForm):
     re_password = forms.CharField(max_length=32, widget=forms.PasswordInput)
@@ -46,7 +45,6 @@ class RegForm(forms.ModelForm):
             return self.cleaned_data
         self.add_error('password', '密码不一致')
         raise ValidationError('两次密码不一致')
-
 
 
 class CustorForm(BaseForm):
@@ -82,3 +80,32 @@ class Enrollment_Form(BaseForm):
         else:
             self.fields['customer'].choices = [(self.instance.customer_id, self.instance.customer)]
             self.fields['enrolment_class'].choices = [(i.pk, str(i)) for i in self.instance.customer.class_list.all()]
+
+
+class ClassListForm(BaseForm):
+    class Meta:
+        model = models.ClassList
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class CourseRecordListForm(BaseForm):
+    class Meta:
+        model = models.CourseRecord
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['re_class'].choices = [(self.instance.re_class_id, self.instance.re_class)]
+        self.fields['recorder'].choices = [(self.instance.recorder_id, self.instance.recorder)]
+
+
+class Study_Record_Form(BaseForm):
+    class Meta:
+        model  = models.StudyRecord
+        fields = "__all__"
+
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)

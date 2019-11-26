@@ -5,14 +5,8 @@
 # @Software: PyCharm
 # @WeChat public address : 程序猿与python之间的秘密
 
-from django.shortcuts import render, HttpResponse, redirect, reverse
-from app01 import models
-from app01.forms import RegForm, CustorForm, ConsultRecord, Enrollment_Form
-import hashlib
-from utils.pagination import Pagination
+from django.shortcuts import HttpResponse
 from django.db.models import Q
-from django.db import transaction
-
 from django.views import View
 
 
