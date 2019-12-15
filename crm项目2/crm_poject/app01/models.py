@@ -247,5 +247,7 @@ class StudyRecord(models.Model):
     course_record = models.ForeignKey('CourseRecord', verbose_name="某节课程")
     student = models.ForeignKey('Customer', verbose_name="学员")
 
+
     class Meta:
         unique_together = ('course_record', 'student')
+
