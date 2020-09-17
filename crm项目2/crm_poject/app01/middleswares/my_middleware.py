@@ -6,7 +6,7 @@ class Authmiddle(MiddlewareMixin):
     def process_request(self,request):
         if request.path_info in [reverse('app01:login'),reverse('app01:register')]:
             return
-        if request.path_info.startswith('admin'):
+        if request.path_info.startswith('/admin'):
             return
         if not request.session.get('is_login'):
             return redirect(reverse('app01:login'))
